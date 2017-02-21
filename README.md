@@ -10,8 +10,10 @@ To get started, include the path to the `fdd_checkup` executable file into your 
 That is it, you can run it from any directory on your machine.
 
 If you don't specify the path to your VPFIT exicutable, the program will look for it ('vpfit') in the folders specified in your .profile, .bashrc, etc files.
-Note, if you normally run vpfit via alias, e.g if you have the following line:
+Note, if you normally run VPFIT via alias, e.g if you have the following line:
+
 alias vpfit='/path/to/vpfit_executable'
+
 in your .profile file, this will raise an error.
 
 
@@ -31,9 +33,9 @@ in your .profile file, this will raise an error.
 
 where:
 ```
-fort.26 - VPFIT output file for your, sort of, best-fit model. Take into account that VPFIT will be run from folders lying 2 directories down in the directory tree. You may need to correct the pathes to your spectral ranges specified in the fort.26 file.
+fort.26 - VPFIT output file for your, sort of, best-fit model.
 
---param_file - Path to the file with fdd parameters to go through.
+param_file - Path to the file with fdd parameters to go through.
 
 ```
 Optional arguments:
@@ -43,3 +45,10 @@ Optional arguments:
 --cpu - Number of vpfit instances to run at a time (default: '1').
 --plot - Create a plot with results (not working yet).
 ```
+**Keep in mind:**
+
+Take into account that VPFIT will be run from folders lying 2 directories down in the directory tree. You may need to correct the pathes to your spectral ranges specified in the fort.26 file.
+
+## What it does
+
+TBA...
