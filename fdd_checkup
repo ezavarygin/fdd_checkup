@@ -2,10 +2,9 @@
 
 import sys
 import os
-import time
 import numpy as np
 from fdd_modules.fdd_directory import fdd_folders_set_up
-from fdd_modules.run_vpfit import run_vpfit
+from fdd_modules.run_vpfit import start_calculation
 from glob import glob
 
 #==============================================================================================
@@ -20,11 +19,6 @@ def welcome_message():
     print ""
     print "==================================================================================="
     print ""
-#    print "          --param .... : List of parameters for which you want to test your model."
-#    print "          ............ : Available ones: 'z' - redshift, 'b' - Doppler  parameter,"
-#    print "          ............ : 'N' - column density and 'a' - alpha/mu (not tested)."
-#    print "          ............ : Each of the specified parameter should be followed with"
-#    print "          ............ : 3 values indicating 'start', 'end', 'step' to go through."
     print "          --param .... : Path to the file with fdd parameters to go through."
     print ""
     print " Optional arguments:"
@@ -38,7 +32,6 @@ def welcome_message():
 #==============================================================================================
 # Checking command line arguments
 #==============================================================================================
-
 # Check if something was specified and pick the path to the fort.26 file
 try:
     if os.path.isfile(sys.argv[1]):
@@ -52,6 +45,7 @@ except IndexError:
     welcome_message()
     quit()
 
+#----------------------------------------------------------------------------------------------
 # Pick the fdd parameters and create a dictionary
 try:
     if sys.argv[2] == '--param':
@@ -96,8 +90,7 @@ for key in fdd_param.keys():
         fdd_param[key].append(10.0**(np.log10(fdd_param[key][i-1])+step))
 
 #----------------------------------------------------------------------------------------------
-
-# look for '--vp_setup' and '--vpfit' in arguments
+# look for settings in command line ('--vp_setup', '--vpfit', '--cpu')
 vp_setup_path = None
 vpfit_path = None
 n_cpu = None
@@ -111,26 +104,26 @@ for i in range(len(sys.argv)):
     else:
         pass
 
+#----------------------------------------------------------------------------------------------
+# Use the default settings if not specified
+
 # if '--vp_setup' was not specified, use the default one
-if vp_setup_path == None:
-    try:
-        vp_setup_path = os.environ['VPFSETUP']
-    except KeyError:
-        pass
-    if vp_setup_path != None and os.path.isfile(vp_setup_path):
-        pass
-    elif os.path.isfile('./vp_setup.dat'):
-        vp_setup_path = './vp_setup.dat'
-    else:
-        print ""
-        print "No 'vp_setup.dat' file was specified!"
-        print ""
-#        quit()
+if vp_setup_path != None and os.path.isfile(vp_setup_path):
+    pass
+elif vp_setup_path == None and os.path.isfile('./vp_setup.dat'):
+    vp_setup_path = './vp_setup.dat'
+else:
+    print ""
+    print " 'vp_setup.dat' file was not specified and is not in the working directory!"
+    print ""
+    quit()
+
 # if '--vpfit' was not specified, use the default one
 if vpfit_path == None:
     vpfit_path = 'vpfit'
 else:
     pass
+
 # if '--cpu' was not specified, use the default one
 if n_cpu == None:
     n_cpu = 1
@@ -139,104 +132,39 @@ else:
     pass
 
 
-
 #==============================================================================================
 # Calling modules
 #==============================================================================================
 
-
-print 'vp_setup: ', vp_setup_path
-print 'vpfit: ', vpfit_path
-#print 'fdd parameters: ', fdd_param
-
 #----------------------------------------------------------------------------------------------
 # Create a net of directories with vp_setup.dat files
 
-#fdd = fdd_folders_set_up(fdd_param,vp_setup_path)
+fdd = fdd_folders_set_up(fdd_param,vp_setup_path)
+print " The directory tree has been created!"
 
 #----------------------------------------------------------------------------------------------
 # Run vpfit from each of the directory with each of the vp_setup file
 
 
-# First, create a temporary file with commands to run/rule VPFIT
-"""
-with open('vpfit_commands','w') as vp_commands:
-    vp_commands.write('f\n')          # Choose fit + return
-    vp_commands.write('?\n')          # Print FDDs to check + return (can be commented)
-    vp_commands.write('\n')           # No setup cnange -> return only
-    vp_commands.write('\n')           # Use default parameter logN -> return only
-    vp_commands.write(fort_path+'\n') # Specify fort26 file + return
-    vp_commands.write('n\n')          # Do not plot + return
-    vp_commands.write('\n')           # Do not fit more line and exit VPFIT -> return only
-    vp_commands.close()
-"""
 # list of pathes to all the directories to run VPFIT from
 path_list = []
 for key in fdd_param.keys():
     path_list = path_list + glob('./{}/*'.format(key))
-
 # Get absolute path
 abs_path_list = map(os.path.abspath,path_list)
-len_of_list = len(abs_path_list) # Number of VPFIT instances to be run
 
-# Run VPFIT
-print "\n========Start VPFITing========\n"
-
-#abs_path_list = abs_path_list[:3]
-
-#for path_i in abs_path_list:
-#    print "past_i:    ", abs_path_list[0]
-#    run_vpfit(vpfit_path, path_i,fort_path,n_cpu) 
-#run_vpfit(vpfit_path, abs_path_list,fort_path,n_cpu)
-
-if len_of_list <= n_cpu: # check if number of processes is less than number of CPUs specified
-    n_cpu = len_of_list  # change n_cpu if needed
-else:
-    pass
-
-vpfit_sub = {}
-for first_set_i in abs_path_list[:n_cpu]: # run as many vpfit instances as n_cpu 
-    fdd_key = '{}/{}/'.format(first_set_i.split('/')[-2],first_set_i.split('/')[-1])
-#    print fdd_key, '<-- started!'
-    vpfit_sub[fdd_key] = run_vpfit(vpfit_path,first_set_i,fort_path)
-
-print "======================= Summary ========================"
-for sub_key in vpfit_sub.keys(): # list folders fo all the instances
-    print " {} <-- VPFIT is being run for...".format(sub_key)
-print "........................................................"
-print " {} instances left to run...".format(len_of_list-n_cpu)
-print "========================================================\n"
-
-n_i = n_cpu # n_i will go through the rest instances
-print_n = 60 # for every print_n of time.sleep()'s the list of instances is printed out 
-check_n = 0
-while vpfit_sub:
-    for sub_key in vpfit_sub.keys():
-        if vpfit_sub[sub_key].poll() != None: # check if instance's vpfit ended
-            print sub_key, '<-- finished!'
-            del vpfit_sub[sub_key] # remove the finished instance
-            try: # try to start new instance of VPFIT in place of finished one
-                rest_path_i = abs_path_list[n_i] # note, array starts from 0
-                fdd_key = '{}/{}/'.format(rest_path_i.split('/')[-2],rest_path_i.split('/')[-1])
-                print fdd_key, '<-- started in place of it!'
-                vpfit_sub[fdd_key] = run_vpfit(vpfit_path,rest_path_i,fort_path) # start new instance of VPFIT
-                n_i = n_i + 1
-            except IndexError:
-                print "There is no fdd setup left to run VPFIT for."
-        else:
-            pass
-    if check_n >= print_n:
-        print "======================= Summary ========================"
-        for sub_key in vpfit_sub.keys(): # list folders fo all the instances
-            print " {} <-- VPFIT is being run for...".format(sub_key)
-        print "........................................................"
-        print " {} instances left to run...".format(len_of_list-n_i)
-        print "========================================================\n"
-        check_n = 0
-#    print 'wait 10 sec...'
-    time.sleep(10.0)
-    check_n = check_n + 1
+# Run VPFITing's
+print " Start calculation..."
+start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu)
 
 
+#----------------------------------------------------------------------------------------------
+# Collect results of calculation from f26 files
 
-print "\n========End VPFITing========\n"
+#print " Collecting results of calculations..."
+#collect_results(abs_path_list)
+
+
+#----------------------------------------------------------------------------------------------
+# All done!
+print " All done!"

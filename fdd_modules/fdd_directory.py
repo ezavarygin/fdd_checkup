@@ -54,5 +54,4 @@ class fdd_folders_set_up:
                         if line.split()[0]!=key:
                             f.write(line + '\n')
                         else:
-                            # Double formating is required in order to evoid scientific notation
                             f.write(key + ' {:.1E}\n'.format(fdd_param[key][i]))
