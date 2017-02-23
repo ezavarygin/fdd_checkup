@@ -68,7 +68,8 @@ def run_vpfit(vpfit_path,path2vpsetup,fort_path):
     else:
         print "\n There is no {} directory!\n".format(path2vpsetup)
         quit()
-    stdin_vpfit = 'f\n?\n\n\n{}\nn\n\n'.format(fort_path)
+    new_fort_path = '../../' + fort_path # we are 2 directories down
+    stdin_vpfit = 'f\n?\n\n\n{}\nn\n\n'.format(new_fort_path)
     stdout_path = path2vpsetup + '/stdout.dat'
     stderr_path = path2vpsetup + '/stderr.dat'
     with open(stdout_path,'w') as out, open(stderr_path,'w') as err:
