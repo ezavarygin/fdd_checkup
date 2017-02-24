@@ -34,9 +34,10 @@ class collect_results:
                                       results[2],results[3]])
                 else:
                     error = 2 # new and original f26's have different number of lines
-                    data_list.append([float(path.split('/')[-1].split('_')[-1]),error,None,None,None,None])                    
+                    data_list.append([float(path.split('/')[-1].split('_')[-1]),error,np.nan,np.nan,np.nan,np.nan])                    
             data_list = np.array(data_list) # Convert to np.array for the following sorting
             data_list = data_list[np.argsort(data_list[:,0])] # Sort the array by fdd values (1st column)
+            print data_list
             np.savetxt(result_file_name,data_list,delimiter='  ',fmt='%.10g') # save sorted results to file
         
         
@@ -58,6 +59,10 @@ class collect_results:
         Dcol_unc = float(total_D_line[7]) # 6 for those without space (HI)
         if Hcol[-1] in ('x','%','X'): # change to whatever you like
             Hcol = float(Hcol[:-1])   # consider 2 last figures if you used 2 instead of 1
+        else:
+            Hcol = float(Hcol)
         if Dcol[-1] in ('x','%','X'):
             Dcol = float(Dcol[:-1])
+        else:
+            Dcol = float(Dcol)
         return [Hcol,Hcol_unc,Dcol,Dcol_unc]
