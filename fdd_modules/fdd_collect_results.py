@@ -37,7 +37,6 @@ class collect_results:
                     data_list.append([float(path.split('/')[-1].split('_')[-1]),error,np.nan,np.nan,np.nan,np.nan])                    
             data_list = np.array(data_list) # Convert to np.array for the following sorting
             data_list = data_list[np.argsort(data_list[:,0])] # Sort the array by fdd values (1st column)
-            print data_list
             np.savetxt(result_file_name,data_list,delimiter='  ',fmt='%.10g') # save sorted results to file
         
         

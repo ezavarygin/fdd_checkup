@@ -47,5 +47,11 @@ def fdd_plot(result_file_list):
 
         plt.subplot(len(fdd_param_keys),1,j+1)
         plt.plot(fdd_list,Dunc_list) # Plotting data
+        if fdd_param_keys[j] == 'fdbstep':
+            plt.xlabel('{}, km/s'.format(fdd_param_keys[j]))
+        else:
+            plt.xlabel(fdd_param_keys[j])
+        plt.ylabel(r'$\Delta$N')
+        plt.xscale('log')
     plt.show()
     print "  Plot is done!"

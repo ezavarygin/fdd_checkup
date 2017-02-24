@@ -145,7 +145,7 @@ else:
 #----------------------------------------------------------------------------------------------
 # Create a net of directories with vp_setup.dat files
 
-#fdd = fdd_folders_set_up(fdd_param,vp_setup_path)
+#fdd_folders_set_up(fdd_param,vp_setup_path)
 #print " The directory tree has been created!"
 
 #----------------------------------------------------------------------------------------------
@@ -178,8 +178,8 @@ collect_results(result_file_list,abs_path_list,fort_path,ion1,ion2)
 if '--plot' in sys.argv:
     print " Plotting..."
     fdd_plot(result_file_list)
-#else:
-#    pass
+else:
+    pass
 
 # All done!
 print " All done!"
