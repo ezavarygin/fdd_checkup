@@ -6,6 +6,8 @@ import numpy as np
 from fdd_modules.fdd_directory import fdd_folders_set_up
 from fdd_modules.fdd_run_vpfit import start_calculation
 from fdd_modules.fdd_collect_results import collect_results
+from fdd_modules.fdd_plot import fdd_plot
+
 from glob import glob
 
 #==============================================================================================
@@ -164,11 +166,20 @@ abs_path_list = map(os.path.abspath,path_list)
 
 #----------------------------------------------------------------------------------------------
 # Collect results of calculation from f26 files
+result_file_list = [key+'_results.dat' for key in fdd_param.keys()] # list of files to save the results in
+
 
 print " Collecting results of calculations for {:d} and {:d} ions...".format(ion1,ion2)
-results = collect_results(abs_path_list,fort_path,ion1,ion2)
-
+collect_results(result_file_list,abs_path_list,fort_path,ion1,ion2)
 
 #----------------------------------------------------------------------------------------------
+# Plot results from the result_file_name file if '--plot' was specified
+
+if '--plot' in sys.argv:
+    print " Plotting..."
+    fdd_plot(result_file_list)
+#else:
+#    pass
+
 # All done!
 print " All done!"
