@@ -6,6 +6,7 @@ import numpy as np
 from fdd_modules.fdd_directory import fdd_folders_set_up
 from fdd_modules.fdd_run_vpfit import start_calculation
 from fdd_modules.fdd_collect_results import collect_results
+from fdd_modules.fdd_collect_results import get_default_fdds
 from fdd_modules.fdd_plot import fdd_plot
 
 from glob import glob
@@ -29,7 +30,7 @@ def welcome_message():
     print "          --vpfit .... : Path to a custom vpfit exicutable or (default: 'vpfit')."
     print "          --cpu ...... : Number of CPUs to use (default: '1')."
     print "          --ions ..... : Number of 2 ions to collect results for."
-    print "          --plot ..... : Create a plot with results (not working yet)."
+    print "          --plot ..... : Create a plot with results."
     print "==================================================================================="
     print ""
 
@@ -145,8 +146,8 @@ else:
 #----------------------------------------------------------------------------------------------
 # Create a net of directories with vp_setup.dat files
 
-#fdd_folders_set_up(fdd_param,vp_setup_path)
-#print " The directory tree has been created!"
+fdd_set_up = fdd_folders_set_up(fdd_param,vp_setup_path)
+print " The directory tree has been created!"
 
 #----------------------------------------------------------------------------------------------
 # Run vpfit from each of the directory with each of the vp_setup file
@@ -160,8 +161,8 @@ for key in fdd_param.keys():
 abs_path_list = map(os.path.abspath,path_list)
 
 # Run VPFITing's
-#print " Start calculation..."
-#start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu)
+print " Start calculation..."
+start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu)
 
 
 #----------------------------------------------------------------------------------------------
@@ -175,9 +176,13 @@ collect_results(result_file_list,abs_path_list,fort_path,ion1,ion2)
 #----------------------------------------------------------------------------------------------
 # Plot results from the result_file_name file if '--plot' was specified
 
+# Plot
 if '--plot' in sys.argv:
+    # Get defauls fdds
+    default_fdds = get_default_fdds(vp_setup_path)
+    print default_fdds
     print " Plotting..."
-    fdd_plot(result_file_list)
+    fdd_plot(result_file_list,default_fdds)
 else:
     pass
 

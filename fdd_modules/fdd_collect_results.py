@@ -65,3 +65,20 @@ class collect_results:
         else:
             Dcol = float(Dcol)
         return [Hcol,Hcol_unc,Dcol,Dcol_unc]
+
+def get_default_fdds(vp_setup_path):
+    """
+    The module is to get default fdd step sizes from vp_setup.dat.
+
+    """
+    with open(vp_setup_path,'r') as f:
+        vp = f.read().split('\n')
+    if vp[-1] == "":
+        del(vp[-1])
+    else: pass
+    default_fdds = {}
+    for line in vp:
+        if line.split()[0] in ['fdbstep','fdzstep','fdclog','fd4vst']:
+            default_fdds[line.split()[0]] = float(line.split()[1])
+        else: pass
+    return default_fdds
