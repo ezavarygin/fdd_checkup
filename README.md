@@ -25,7 +25,7 @@ in your .profile file, this will raise an error.
 - os
 - glob
 - time
-- matplotlib (will be in future)
+- matplotlib
 
 ## Usage
 
@@ -42,8 +42,9 @@ Optional arguments:
 ```
 --vp_setup - Path to your vp_setup.dat file (default: './vp_setup.dat')
 --vpfit - Path to your vpfit exicutable (default: 'vpfit').
---cpu - Number of vpfit instances to run at a time (default: '1').
---plot - Create a plot with results (not working yet).
+--cpu  - Number of vpfit instances to run at a time (default: '1').
+--ions - Number of 2 ions to collect results for.
+--plot - Create a plot with results (1st ion is H, 2nd ion is D in plots).
 ```
 **Keep in mind:**
 

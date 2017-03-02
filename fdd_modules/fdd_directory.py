@@ -46,7 +46,14 @@ class fdd_folders_set_up:
             # create vp_setup.dat files
             for i in range(len(fdd_param[key])):
                 subfolder_path = main_fdd_path+'/'+key+"_{:.1e}".format(fdd_param[key][i])
-                os.makedirs(subfolder_path)
+                try:
+                    os.makedirs(subfolder_path)
+                except OSError,e:
+                    print str(e)
+                    print " The folder '{}' already exists!".format(subfolder_path)
+                    print " 'fdd_checkup' rounds fdd step sizes up to 2 significant figures."
+                    print " Consifer less FDD steps to go through or change the code in fdd_folders_set_up.fdd_directory module!"
+                    quit()
                 with open(subfolder_path+'/vp_setup.dat','w') as f:
                     for line in vp_without_fdd:
                         f.write(line + '\n')

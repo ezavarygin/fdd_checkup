@@ -44,6 +44,8 @@ def fdd_plot(result_file_list,default_fdds):
                 print "  {} = {} <- excluded: error '1' (no f26 file was found, check 'stdout.dat' and 'stderr.dat')".format(fdd_param_keys[j], line_split[0])
             elif line_split[1] == '2':
                 print "  {} = {} <- excluded: error '2' (new and original f26's have different number of lines, check 'stdout.dat')".format(fdd_param_keys[j], line_split[0])
+            elif line_split[1] == '3':
+                print "  {} = {} <- excluded: error '3' ('****' uncertainty was found for one of specified ion! Check f26 file)".format(fdd_param_keys[j], line_split[0])
             else:
                 print "  Unknown error code was specified in {}".format(result_file_name)
 
@@ -60,7 +62,7 @@ def fdd_plot(result_file_list,default_fdds):
         else:
             axs[4*j+1].set_xlabel('{} [{:g}]'.format(fdd_param_keys[j],default_fdds[fdd_param_keys[j]]))
         axs[4*j+1].axvline(default_fdds[fdd_param_keys[j]],linewidth=1.2,color='g') # indicate fdd from vp_setup.dat
-        axs[4*j+1].margins(y=np.ptp(Dunc_list)/2.0) # Include marging above and below the data to show default fdds
+#        axs[4*j+1].margins(y=np.ptp(Dunc_list)/2.0) # Include marging above and below the data to show default fdds
         axs[4*j+2] = axs[4*j+1].twinx() # second plot on the same axis
         axs[4*j+2].plot(fdd_list,Hunc_list,color='r')
         axs[4*j+2].set_ylabel(r'$\Delta$N(H I)',color='r')

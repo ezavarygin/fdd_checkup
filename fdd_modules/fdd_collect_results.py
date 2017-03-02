@@ -28,13 +28,19 @@ class collect_results:
                 # error = 0 => keep going
                 with open(path_to_newf26[0],'r') as new_f26:
                     len_new_fort = len(new_f26.read().split('\n')) # number of lines in new f26
-                if len_new_fort == len_fort: # error = 0 still
-                    results = self.fort_parse(path_to_newf26[0],ion1,ion2) # array with results
-                    data_list.append([float(path.split('/')[-1].split('_')[-1]),error,results[0],results[1],
-                                      results[2],results[3]])
-                else:
+                if len_new_fort != len_fort:
                     error = 2 # new and original f26's have different number of lines
-                    data_list.append([float(path.split('/')[-1].split('_')[-1]),error,np.nan,np.nan,np.nan,np.nan])                    
+                    data_list.append([float(path.split('_')[-1]),error,np.nan,np.nan,np.nan,np.nan])
+
+                else: # error = 0 still
+                    results = self.fort_parse(path_to_newf26[0],ion1,ion2) # array with results
+                    if results[1] == -3 or results[3] == -3:
+                        error = 3 # '*******' uncertainty in f26
+                        data_list.append([float(path.split('_')[-1]),error,np.nan,np.nan,np.nan,np.nan])
+                    else:
+                        data_list.append([float(path.split('_')[-1]),error,results[0],results[1],
+                                          results[2],results[3]])
+          
             data_list = np.array(data_list) # Convert to np.array for the following sorting
             data_list = data_list[np.argsort(data_list[:,0])] # Sort the array by fdd values (1st column)
             np.savetxt(result_file_name,data_list,delimiter='  ',fmt='%.10g') # save sorted results to file
@@ -54,8 +60,14 @@ class collect_results:
         total_D_line = all_ions[ion2-1].split()
         Hcol = total_H_line[6] # 6 for ions with space in lable (H I)
         Dcol = total_D_line[6] # 5 for those without space (HI)
-        Hcol_unc = float(total_H_line[7]) # 7 for ions with space in lable (H I)
-        Dcol_unc = float(total_D_line[7]) # 6 for those without space (HI)
+        if "*" in total_H_line[7]:
+            Hcol_unc = -3 # will write error
+        else:
+            Hcol_unc = float(total_H_line[7]) # 7 for ions with space in lable (H I), 6 for those without space (HI)
+        if "*" in total_D_line[7]:
+            Dcol_unc = -3 # will write error
+        else:
+            Dcol_unc = float(total_D_line[7]) # 7 for ions with space in lable (D I), 6 for those without space (DI)
         if Hcol[-1] in ('x','%','X'): # change to whatever you like
             Hcol = float(Hcol[:-1])   # consider 2 last figures if you used 2 instead of 1
         else:

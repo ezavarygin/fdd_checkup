@@ -7,6 +7,7 @@ def start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu):
     The module is to run multiple vpfit's in background.
 
     """
+    work_dir = os.getcwd() # save path to working directory
     len_of_list = len(abs_path_list) # Number of VPFIT instances to be run
     if len_of_list <= n_cpu: # check if number of processes is less than number of CPUs specified
         n_cpu = len_of_list  # change n_cpu if needed
@@ -54,6 +55,7 @@ def start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu):
         #print 'wait 10 sec...'
         time.sleep(10.0)
         check_n = check_n + 1
+    os.chdir(work_dir) # go back to working directory
 
 
 

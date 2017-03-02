@@ -146,9 +146,10 @@ else:
 #----------------------------------------------------------------------------------------------
 # Create a net of directories with vp_setup.dat files
 
-fdd_set_up = fdd_folders_set_up(fdd_param,vp_setup_path)
-print " The directory tree has been created!"
-
+#if '--plot' not in sys.argv:
+#    fdd_folders_set_up(fdd_param,vp_setup_path)
+#    print " The directory tree has been created!"
+#else: pass
 #----------------------------------------------------------------------------------------------
 # Run vpfit from each of the directory with each of the vp_setup file
 
@@ -161,18 +162,19 @@ for key in fdd_param.keys():
 abs_path_list = map(os.path.abspath,path_list)
 
 # Run VPFITing's
-print " Start calculation..."
-start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu)
-
+#if '--plot' not in sys.argv:
+#    print " Start calculation..."
+#    start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu)
+#else: pass
 
 #----------------------------------------------------------------------------------------------
 # Collect results of calculation from f26 files
 result_file_list = [key+'_results.dat' for key in fdd_param.keys()] # list of files to save the results in
 
-
-print " Collecting results of calculations for {:d} and {:d} ions...".format(ion1,ion2)
-collect_results(result_file_list,abs_path_list,fort_path,ion1,ion2)
-
+if '--plot' not in sys.argv:
+    print " Collecting results of calculations for {:d} and {:d} ions...".format(ion1,ion2)
+    collect_results(result_file_list,abs_path_list,fort_path,ion1,ion2)
+else: pass
 #----------------------------------------------------------------------------------------------
 # Plot results from the result_file_name file if '--plot' was specified
 
