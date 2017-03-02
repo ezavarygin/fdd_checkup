@@ -146,10 +146,10 @@ else:
 #----------------------------------------------------------------------------------------------
 # Create a net of directories with vp_setup.dat files
 
-#if '--plot' not in sys.argv:
-#    fdd_folders_set_up(fdd_param,vp_setup_path)
-#    print " The directory tree has been created!"
-#else: pass
+if '--plot' not in sys.argv:
+    fdd_folders_set_up(fdd_param,vp_setup_path)
+    print " The directory tree has been created!"
+else: pass
 #----------------------------------------------------------------------------------------------
 # Run vpfit from each of the directory with each of the vp_setup file
 
@@ -162,10 +162,10 @@ for key in fdd_param.keys():
 abs_path_list = map(os.path.abspath,path_list)
 
 # Run VPFITing's
-#if '--plot' not in sys.argv:
-#    print " Start calculation..."
-#    start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu)
-#else: pass
+if '--plot' not in sys.argv:
+    print " Start calculation..."
+    start_calculation(vpfit_path,fort_path,abs_path_list,n_cpu)
+else: pass
 
 #----------------------------------------------------------------------------------------------
 # Collect results of calculation from f26 files
