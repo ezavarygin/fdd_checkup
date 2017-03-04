@@ -182,8 +182,8 @@ else: pass
 if '--plot' in sys.argv:
     # Get defauls fdds
     default_fdds = get_default_fdds(vp_setup_path)
-    print default_fdds
     print " Plotting..."
+    print "  Default FDDs:", default_fdds
     fdd_plot(result_file_list,default_fdds)
 else:
     pass
