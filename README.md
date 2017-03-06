@@ -55,12 +55,19 @@ Take into account that VPFIT will be run from folders lying 2 directories down i
 TBA...
 
 The structure of the files with results:
+
 FDD_parameter_value   ERROR_code   Number_of_iterations   ion1_value   ion1_unc   ion2_value   ion2_unc
 
-ERROR codes:
+**ERROR keys:**
+
 0 - no errors
+
 1 - no f26 file was found
+
 2 - error happened during VPFITing, check `stderr.dat` file
+
 3 - zero size f26 file, check `stdout.dat` file
+
 4 - new and original f26 files have different number of lines
+
 5 - '*******'-like uncertainty for one (or both) of the ions was found in f26

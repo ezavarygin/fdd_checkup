@@ -132,11 +132,12 @@ else:
     pass
 
 # if '--cpu' was not specified, use the default one
-if n_cpu == None:
-    n_cpu = 1
-    print "\n No CPUs were specified, 1 used!\n"
-else:
-    pass
+if '--plot' not in sys.argv:
+    if n_cpu == None:
+        n_cpu = 1
+        print "\n No CPUs were specified, 1 used!\n"
+    else:
+        pass
 
 
 #==============================================================================================
@@ -180,11 +181,24 @@ else: pass
 
 # Plot
 if '--plot' in sys.argv:
+    # Get default ion1 and ion2 parameters:
+    with open(fort_path,'r') as fort26:
+        f26_lines = fort26.read().split('\n')
+        if f26_lines[-1] == '':
+            del f26_lines[-1]
+        else: pass
+        ion_lines = [line for line in f26_lines if line[0] != "%" and line[0] != "!"]
+        ion1_def = float(ion_lines[ion1-1].split()[6])
+        ion1_def_unc = float(ion_lines[ion1-1].split()[7])
+        ion2_def = float(ion_lines[ion2-1].split()[6])
+        ion2_def_unc = float(ion_lines[ion2-1].split()[7])
+        ion_default = [ion1_def,ion1_def_unc,ion2_def,ion2_def_unc]
     # Get defauls fdds
     default_fdds = get_default_fdds(vp_setup_path)
     print " Plotting..."
+    print "  Default ion values: ions1 = {} +/- {}, ion2 = {} +/- {}".format(ion1_def,ion1_def_unc,ion2_def,ion2_def_unc)
     print "  Default FDDs:", default_fdds
-    fdd_plot(result_file_list,default_fdds)
+    fdd_plot(result_file_list,default_fdds,ion_default)
 else:
     pass
 

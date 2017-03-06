@@ -14,14 +14,14 @@ rc('ytick', labelsize=10)
 
 
 
-def fdd_plot(result_file_list,default_fdds):
+def fdd_plot(result_file_list,default_fdds,ion_default):
     """
     Module it to plot the results from fdd_results.dat file.
 
     """
     # Getting data from the file
     fdd_param_keys = [result_file.split('_')[0] for result_file in result_file_list]
-    print "  Parameters to plot for:", fdd_param_keys
+#    print "  Parameters to plot for:", fdd_param_keys
     fig = plt.figure(figsize=(14,12))#(8.27,11.69))
     axs = [None]*(len(result_file_list)*5 + 1) # List of axes: 2 ions x (1 uncert + 1 value) + 1 for iterations (axs[0] will not be used)
     for j,result_file_name in enumerate(result_file_list):
@@ -71,7 +71,8 @@ def fdd_plot(result_file_list,default_fdds):
         # Data are ready to plot
         # First column of subplots (uncertainties)
         axs[5*j+1] = plt.subplot(len(fdd_param_keys),3,3*j+1)
-        axs[5*j+1].plot(fdd_list,Dunc_list,color='b') # Plotting data
+        axs[5*j+1].plot(fdd_list,Dunc_list,color='b',drawstyle="steps-mid") # Plotting data
+        axs[5*j+1].plot(default_fdds[fdd_param_keys[j]],ion_default[3],'bo',mew=0.0) # plotting default result
         axs[5*j+1].set_ylabel(r'$\Delta$N(D I)',color='b')
         axs[5*j+1].tick_params('y',colors='b')
         axs[5*j+1].ticklabel_format(useOffset=False)
@@ -83,7 +84,8 @@ def fdd_plot(result_file_list,default_fdds):
         axs[5*j+1].axvline(default_fdds[fdd_param_keys[j]],linewidth=1,color='g') # indicate fdd from vp_setup.dat
 #        axs[5*j+1].margins(y=np.ptp(Dunc_list)/2.0) # Include marging above and below the data to show default fdds
         axs[5*j+2] = axs[5*j+1].twinx() # second plot on the same axis
-        axs[5*j+2].plot(fdd_list,Hunc_list,color='r')
+        axs[5*j+2].plot(fdd_list,Hunc_list,color='r',drawstyle="steps-mid")
+        axs[5*j+2].plot(default_fdds[fdd_param_keys[j]],ion_default[1],'ro',mew=0.0)
         axs[5*j+2].set_ylabel(r'$\Delta$N(H I)',color='r')
         axs[5*j+2].tick_params('y',colors='r')
         axs[5*j+2].ticklabel_format(useOffset=False,axis='y')
@@ -95,7 +97,8 @@ def fdd_plot(result_file_list,default_fdds):
             med_unc = np.median(Dunc_list)
             print "median = {} +/- {} for {}".format(median,med_unc,fdd_param_keys[j])
             axs[5*j+3].fill_between(fdd_list, median-med_unc, median+med_unc,facecolor='green', alpha=0.4)
-        axs[5*j+3].plot(fdd_list,D_list,color='b') # Plotting data
+        axs[5*j+3].plot(fdd_list,D_list,color='b',drawstyle="steps-mid",zorder=2) # Plotting data
+        axs[5*j+3].plot(default_fdds[fdd_param_keys[j]],ion_default[2],'bo',zorder=10,mew=0.0)
         axs[5*j+3].set_ylabel(r'N(D I)',color='b')
         axs[5*j+3].ticklabel_format(useOffset=False)
         axs[5*j+3].tick_params('y',colors='b')
@@ -107,7 +110,8 @@ def fdd_plot(result_file_list,default_fdds):
         axs[5*j+3].axvline(default_fdds[fdd_param_keys[j]],linewidth=1,color='g') # indicate fdd from vp_setup.dat
 #        axs[5*j+3].margins(y=np.ptp(D_list),tight=False) # Include marging above and below the data to show default fdds
         axs[5*j+4] = axs[5*j+3].twinx()
-        axs[5*j+4].plot(fdd_list,H_list,color='r')
+        axs[5*j+4].plot(fdd_list,H_list,color='r',drawstyle="steps-mid",zorder=1)
+        axs[5*j+4].plot(default_fdds[fdd_param_keys[j]],ion_default[0],'ro',zorder=10,mew=0.0)
         axs[5*j+4].set_ylabel(r'N(H I)',color='r')
         axs[5*j+4].tick_params('y',colors='r')
         axs[5*j+4].ticklabel_format(useOffset=False,axis='y')
