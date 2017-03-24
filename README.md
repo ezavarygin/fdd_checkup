@@ -72,7 +72,9 @@ Take into account that VPFIT will be run from folders lying 2 directories down i
 
 **The structure of the output files:**
 
-FDD_parameter_value   ERROR_code   Number_of_iterations   ion1_value   ion1_unc   ion2_value   ion2_unc
+```
+FDD_parameter_value  ERROR_key  Number_of_iterations  ion1_value  ion1_unc  ion2_value  ion2_unc
+```
 
 **ERROR keys:**
 
